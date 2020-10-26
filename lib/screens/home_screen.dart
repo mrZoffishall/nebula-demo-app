@@ -49,27 +49,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Align(
                     alignment: Alignment.topRight,
-                    child: PopupMenuButton(
-                      icon: Icon(AntDesign.setting),
-                      itemBuilder: (context) {
-                        return ["Dark Mode"].map((e) {
-                          return PopupMenuItem(
-                            enabled: false,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("$e"),
-                                Switch(
-                                  value: themeProvider.appTheme == themeProvider.darkTheme,
-                                  onChanged: (bool value) {
-                                    final theme = value ? themeProvider.darkTheme : themeProvider.lightTheme;
-                                    context.read<ThemeProvider>().setAppTheme(theme);
-                                  },
-                                ),
-                              ],
+                    child: IconButton(
+                      icon: themeProvider.appTheme == themeProvider.lightTheme
+                          ? Icon(
+                              Feather.moon,
+                              color: Colors.black54,
+                            )
+                          : Icon(
+                              Feather.sun,
+                              color: Colors.yellow,
                             ),
-                          );
-                        }).toList();
+                      onPressed: () {
+                        final theme = themeProvider.appTheme == themeProvider.lightTheme ? themeProvider.darkTheme : themeProvider.lightTheme;
+                        context.read<ThemeProvider>().setAppTheme(theme);
                       },
                     ),
                   ),
@@ -135,41 +127,44 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 10),
             context.watch<JobProvider>().loadingState == LoadingState.loading
                 ? ls.LoadingState()
-                : context.select((JobProvider provider) => provider).jobList.fold((NException error) {
-                    return ErrorState(
-                      message: error.message,
-                    );
-                  }, (jobList) {
-                    return Expanded(
-                      child: Container(
-                        width: size.width,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(32.0),
-                            topRight: Radius.circular(32.0),
+                : context.select((JobProvider provider) => provider).jobList.fold(
+                    (NException error) {
+                      return ErrorState(
+                        message: error.message,
+                      );
+                    },
+                    (jobList) {
+                      return Expanded(
+                        child: Container(
+                          width: size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(32.0),
+                              topRight: Radius.circular(32.0),
+                            ),
+                            color: Theme.of(context).backgroundColor,
                           ),
-                          color: Theme.of(context).backgroundColor,
-                        ),
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Latest jobs", style: Theme.of(context).textTheme.headline2),
-                                SizedBox(height: 10),
-                                ...jobList.map((job) {
-                                  return JobCard(
-                                    job: job,
-                                  );
-                                })
-                              ],
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Latest jobs", style: Theme.of(context).textTheme.headline2),
+                                  SizedBox(height: 10),
+                                  ...jobList.map((job) {
+                                    return JobCard(
+                                      job: job,
+                                    );
+                                  })
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  })
+                      );
+                    },
+                  )
           ],
         ),
       ),

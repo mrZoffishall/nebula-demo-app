@@ -7,7 +7,7 @@ class StatusBar {
       SystemUiOverlayStyle(
         statusBarBrightness: Theme.of(context).brightness,
         statusBarColor: Theme.of(context).accentColor,
-        statusBarIconBrightness: Theme.of(context).brightness == Brightness.light? Brightness.dark : Brightness.light,
+        statusBarIconBrightness: Theme.of(context).brightness == Brightness.light ? Brightness.dark : Brightness.light,
       ),
     );
   }

@@ -15,6 +15,7 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   final ThemeData lightTheme = ThemeData(
+    brightness: Brightness.light,
     primaryColor: Color(0XFF69CA87),
     accentColor: Color(0XFFFFFFFF),
     scaffoldBackgroundColor: Colors.white,
@@ -31,6 +32,33 @@ class ThemeProvider extends ChangeNotifier {
       headline2: GoogleFonts.openSans(
         fontSize: 18.0,
         color: Colors.black,
+        fontWeight: FontWeight.w700,
+      ),
+      bodyText2: GoogleFonts.openSans(
+        fontSize: 14.0,
+        color: Color(0XFF78909C),
+      ),
+    ),
+  );
+
+  final ThemeData darkTheme = ThemeData(
+    brightness: Brightness.dark,
+    primaryColor: Color(0XFF69CA87),
+    accentColor: Color(0XFF313131),
+    scaffoldBackgroundColor: Color(0XFF313131),
+    backgroundColor: Color(0XFF313537),
+    cursorColor: Colors.white,
+    primarySwatch: Colors.green,
+    shadowColor: Colors.black.withOpacity(0.5),
+    textTheme: TextTheme(
+      headline1: GoogleFonts.openSans(
+        fontSize: 24.0,
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+      headline2: GoogleFonts.openSans(
+        fontSize: 18.0,
+        color: Colors.white,
         fontWeight: FontWeight.w700,
       ),
       bodyText2: GoogleFonts.openSans(

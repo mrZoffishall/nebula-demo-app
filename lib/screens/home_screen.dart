@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nebula/utils/status_bar.dart';
-import 'package:nebula/widgets/c_text_field.dart';
+import 'package:nebula/widgets/forms/c_text_field.dart';
 import 'package:nebula/widgets/job_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -97,7 +97,7 @@ class HomeScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text("Latest jobs", style: Theme.of(context).textTheme.headline2),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       JobCard(),
                       JobCard(),
                       JobCard(),

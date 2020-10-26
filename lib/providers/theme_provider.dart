@@ -63,7 +63,7 @@ class ThemeProvider extends ChangeNotifier {
       ),
       bodyText2: GoogleFonts.openSans(
         fontSize: 14.0,
-        color: Color(0XFF78909C),
+        color: Colors.white,
       ),
     ),
   );

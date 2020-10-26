@@ -1,12 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:nebula/core/loading_state.dart';
+import 'package:nebula/providers/job_provider.dart';
 import 'package:nebula/providers/theme_provider.dart';
+import 'package:nebula/utils/n_exception.dart';
 import 'package:nebula/utils/status_bar.dart';
+import 'package:nebula/widgets/common/error_state.dart';
+import 'package:nebula/widgets/common/loading_state.dart' as ls;
 import 'package:nebula/widgets/forms/c_text_field.dart';
 import 'package:nebula/widgets/job_card.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<JobProvider>().getJobList();
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
@@ -39,7 +62,6 @@ class HomeScreen extends StatelessWidget {
                                 Switch(
                                   value: themeProvider.appTheme == themeProvider.darkTheme,
                                   onChanged: (bool value) {
-                                    print(value);
                                     final theme = value ? themeProvider.darkTheme : themeProvider.lightTheme;
                                     context.read<ThemeProvider>().setAppTheme(theme);
                                   },
@@ -111,33 +133,43 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10),
-            Expanded(
-              child: Container(
-                width: size.width,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(32.0),
-                    topRight: Radius.circular(32.0),
-                  ),
-                  color: Theme.of(context).backgroundColor,
-                ),
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Latest jobs", style: Theme.of(context).textTheme.headline2),
-                        SizedBox(height: 10),
-                        JobCard(),
-                        JobCard(),
-                        JobCard(),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            )
+            context.watch<JobProvider>().loadingState == LoadingState.loading
+                ? ls.LoadingState()
+                : context.select((JobProvider provider) => provider).jobList.fold((NException error) {
+                    return ErrorState(
+                      message: error.message,
+                    );
+                  }, (jobList) {
+                    return Expanded(
+                      child: Container(
+                        width: size.width,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(32.0),
+                            topRight: Radius.circular(32.0),
+                          ),
+                          color: Theme.of(context).backgroundColor,
+                        ),
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Latest jobs", style: Theme.of(context).textTheme.headline2),
+                                SizedBox(height: 10),
+                                ...jobList.map((job) {
+                                  return JobCard(
+                                    job: job,
+                                  );
+                                })
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  })
           ],
         ),
       ),

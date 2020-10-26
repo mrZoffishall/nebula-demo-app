@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
+import 'package:nebula/models/job.dart';
 import 'package:nebula/screens/jobs/job_details_screen.dart';
 import 'package:nebula/widgets/common/tag.dart';
 
 class JobCard extends StatelessWidget {
+  final Job job;
+
+  JobCard({this.job});
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -43,7 +50,7 @@ class JobCard extends StatelessWidget {
                       Container(
                         width: 30,
                         height: 30,
-                        child: Image.network("https://assets.stickpng.com/thumbs/5847f9cbcef1014c0b5e48c8.png"),
+                        child: Image.network(job.companyLogo ?? "https://via.placeholder.com/150"),
                       ),
                       SizedBox(width: 10),
                       Expanded(
@@ -53,18 +60,26 @@ class JobCard extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  "Product designer",
-                                  style: Theme.of(context).textTheme.headline1.apply(fontSizeDelta: -10),
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    job.title,
+                                    overflow: TextOverflow.clip,
+                                    style: Theme.of(context).textTheme.headline1.apply(fontSizeDelta: -10),
+                                  ),
                                 ),
-                                Text(
-                                  "Yesterday",
-                                  style: Theme.of(context).textTheme.bodyText2.apply(fontSizeDelta: -4),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    job.createdAt,
+                                    textAlign: TextAlign.end,
+                                    style: Theme.of(context).textTheme.bodyText2.apply(fontSizeDelta: -4),
+                                  ),
                                 )
                               ],
                             ),
                             Text(
-                              "Google LLC",
+                              job.company,
                               style: Theme.of(context).textTheme.bodyText2.apply(fontSizeDelta: -2),
                             ),
                           ],
@@ -73,20 +88,24 @@ class JobCard extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 15),
-                  Text(
-                    "Lorem ipsum dolor sit atmet consectur ba bla bla bla bla",
-                    style: Theme.of(context).textTheme.bodyText2.apply(fontSizeDelta: -2),
+                  Html(
+                    data: job.description.length > 90 ? "${job.description.substring(0, 90)}... " : job.description,
+                    style: {
+                      "div": Style(
+                        fontSize: FontSize.small, 
+                      ),
+                    },
                   ),
                   SizedBox(height: 15),
                   Row(
                     children: [
                       Tag(
-                        label: "Remote",
-                        color: Colors.redAccent,
+                        label: job.type,
+                        color: job.type.toLowerCase() == "remote" ? Colors.orangeAccent : Colors.redAccent,
                       ),
                       SizedBox(width: 6),
                       Tag(
-                        label: "Fulltime",
+                        label: job.location.length >= 30 ? "${job.location.substring(0, 30)}..." : job.location,
                         color: Colors.greenAccent,
                       ),
                     ],

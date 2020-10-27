@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nebula/core/loading_state.dart';
+import 'package:nebula/models/job.dart';
 import 'package:nebula/providers/job_provider.dart';
 import 'package:nebula/providers/theme_provider.dart';
 import 'package:nebula/utils/n_exception.dart';
 import 'package:nebula/utils/status_bar.dart';
 import 'package:nebula/widgets/common/c_chip.dart';
+import 'package:nebula/widgets/common/empty_state.dart';
 import 'package:nebula/widgets/common/error_state.dart';
 import 'package:nebula/widgets/common/loading_state.dart' as ls;
 import 'package:nebula/widgets/forms/c_text_field.dart';
@@ -41,7 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: ListView(
-          //crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -118,31 +119,39 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     (jobList) {
-                      return Container(
-                        width: size.width,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(32.0),
-                            topRight: Radius.circular(32.0),
-                          ),
-                          color: Theme.of(context).backgroundColor,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Latest jobs", style: Theme.of(context).textTheme.headline2),
-                              SizedBox(height: 10),
-                              ...jobList.map((job) {
-                                return JobCard(
-                                  job: job,
-                                );
-                              })
-                            ],
-                          ),
-                        ),
-                      );
+                      return jobList.isEmpty
+                          ? EmptyState()
+                          : Container(
+                              width: size.width,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(32.0),
+                                  topRight: Radius.circular(32.0),
+                                ),
+                                color: Theme.of(context).backgroundColor,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Latest jobs", style: Theme.of(context).textTheme.headline2),
+                                    SizedBox(height: 10),
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: jobList.length,
+                                      itemBuilder: (context, index) {
+                                        final Job job = jobList[index];
+                                        return JobCard(
+                                          job: job,
+                                        );
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
                     },
                   ),
           ],

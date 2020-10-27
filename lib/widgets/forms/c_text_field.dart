@@ -3,8 +3,13 @@ import 'package:flutter/material.dart';
 class CTextField extends StatelessWidget {
   final String hintText;
   final Widget prefixIcon;
+  final Function(String) onFieldSubmitted;
 
-  CTextField({this.hintText, this.prefixIcon});
+  CTextField({
+    this.hintText,
+    this.prefixIcon,
+    this.onFieldSubmitted,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +19,7 @@ class CTextField extends StatelessWidget {
         color: Theme.of(context).backgroundColor,
       ),
       child: TextFormField(
+        onFieldSubmitted: onFieldSubmitted,
         decoration: InputDecoration(
           prefixIcon: prefixIcon,
           hintText: hintText,

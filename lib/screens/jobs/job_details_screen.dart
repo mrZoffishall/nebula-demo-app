@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:nebula/models/job.dart';
 import 'package:nebula/widgets/common/tag.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class JobDetailsScreen extends StatefulWidget {
+  final Job job;
+
+  JobDetailsScreen({@required this.job});
+
   @override
   _JobDetailsScreenState createState() => _JobDetailsScreenState();
 }
@@ -16,37 +24,60 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
+            //crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              IconButton(
-                icon: Icon(Ionicons.ios_arrow_back, size: 18),
-                onPressed: () => Navigator.of(context).pop(),
+              Align(
+                alignment: Alignment.topLeft,
+                child: IconButton(
+                  icon: Icon(Ionicons.ios_arrow_back, size: 18),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
               ),
               SizedBox(height: 10),
               Center(
                 child: Container(
                   height: 90,
                   width: 90,
-                  child: Image.network("https://assets.stickpng.com/thumbs/5847f9cbcef1014c0b5e48c8.png"),
+                  child: Image.network(
+                    widget.job.companyLogo ?? "https://via.placeholder.com/150",
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
               SizedBox(height: 20),
+              Text(
+                widget.job.company,
+                style: Theme.of(context).textTheme.headline2,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Tag(
-                    label: "Remote",
+                    label: widget.job.type,
                     color: Colors.redAccent,
                   ),
                   SizedBox(width: 6),
                   Tag(
-                    label: "Fulltime",
-                    color: Colors.greenAccent,
+                    label: widget.job.location.length >= 30 ? "${widget.job.location.substring(0, 30)}..." : widget.job.location,
+                    color: widget.job.location.toLowerCase() == "remote" ? Colors.orangeAccent : Colors.greenAccent,
                   ),
                 ],
               ),
               SizedBox(height: 20),
-              Text("Text goes here"),
+              Html(
+                data: widget.job.description,
+                style: {
+                  "div": Style(
+                    fontSize: FontSize.small,
+                  ),
+                },
+                onLinkTap: (String link) {
+                  print(link);
+                },
+              ),
               SizedBox(height: 60),
             ],
           ),
@@ -73,7 +104,9 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (await canLaunch(widget.job.url)) launch(widget.job.url);
+                  },
                   child: Text(
                     "Apply here",
                     style: Theme.of(context).textTheme.bodyText1.apply(color: Theme.of(context).accentColor),

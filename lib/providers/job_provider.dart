@@ -9,14 +9,22 @@ class JobProvider extends BaseProvider {
 
   int page = 1;
 
-  getJobList() {
+  getJobList({Map<String, dynamic> filters}) {
     this.toggleLoadingState();
-    jobService.getJobs().then((jobs) {
+    jobService.getJobs(filters: this.getFilterStringFromMap(filters)).then((jobs) {
       jobList = Right(jobs);
       this.toggleLoadingState();
     }).catchError((error) {
       jobList = Left(error);
       this.toggleLoadingState();
     });
+  }
+
+  getFilterStringFromMap(Map<String, dynamic> filters) {
+    String filterString = "";
+    filters.forEach((key, value) {
+      filterString += "$key=$value&";
+    });
+    return filterString;
   }
 }

@@ -7,9 +7,9 @@ import 'package:nebula/providers/theme_provider.dart';
 import 'package:nebula/utils/n_exception.dart';
 import 'package:nebula/utils/status_bar.dart';
 import 'package:nebula/widgets/common/c_chip.dart';
-import 'package:nebula/widgets/common/empty_state.dart';
-import 'package:nebula/widgets/common/error_state.dart';
-import 'package:nebula/widgets/common/loading_state.dart' as ls;
+import 'package:nebula/widgets/states/empty_state.dart';
+import 'package:nebula/widgets/states/error_state.dart';
+import 'package:nebula/widgets/states/loading_state.dart' as ls;
 import 'package:nebula/widgets/forms/c_text_field.dart';
 import 'package:nebula/widgets/job_card.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +20,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Map<String, dynamic> filters = {};
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -89,6 +91,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.grey[500],
                           ),
                           hintText: "Search a job",
+                          onFieldSubmitted: (String value) {
+                            if (filters.containsKey("description")) {
+                              filters['description'] = value;
+                            } else {
+                              filters.addAll({"description": value});
+                            }
+
+                            context.read<JobProvider>().getJobList(filters: filters);
+                          },
                         ),
                       ),
                       IconButton(

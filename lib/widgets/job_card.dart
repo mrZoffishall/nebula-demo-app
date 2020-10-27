@@ -35,7 +35,9 @@ class JobCard extends StatelessWidget {
                 builder: (context) {
                   return Container(
                     height: MediaQuery.of(context).size.height * 0.75,
-                    child: JobDetailsScreen(),
+                    child: JobDetailsScreen(
+                      job: job,
+                    ),
                   );
                 },
               );
@@ -50,7 +52,10 @@ class JobCard extends StatelessWidget {
                       Container(
                         width: 30,
                         height: 30,
-                        child: Image.network(job.companyLogo ?? "https://via.placeholder.com/150"),
+                        child: Image.network(
+                          job.companyLogo ?? "https://via.placeholder.com/150",
+                          fit: BoxFit.contain,
+                        ),
                       ),
                       SizedBox(width: 10),
                       Expanded(
@@ -92,7 +97,7 @@ class JobCard extends StatelessWidget {
                     data: job.description.length > 90 ? "${job.description.substring(0, 90)}... " : job.description,
                     style: {
                       "div": Style(
-                        fontSize: FontSize.small, 
+                        fontSize: FontSize.small,
                       ),
                     },
                   ),
@@ -106,7 +111,7 @@ class JobCard extends StatelessWidget {
                       SizedBox(width: 6),
                       Tag(
                         label: job.location.length >= 30 ? "${job.location.substring(0, 30)}..." : job.location,
-                        color:job.location.toLowerCase() == "remote" ? Colors.orangeAccent :  Colors.greenAccent,
+                        color: job.location.toLowerCase() == "remote" ? Colors.orangeAccent : Colors.greenAccent,
                       ),
                     ],
                   ),

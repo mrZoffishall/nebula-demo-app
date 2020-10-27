@@ -149,7 +149,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     (jobList) {
                       return jobList.isEmpty
-                          ? EmptyState()
+                          ? EmptyState(
+                            message: "No job available for the moment, please try again later.",
+                          )
                           : Container(
                               width: size.width,
                               decoration: BoxDecoration(

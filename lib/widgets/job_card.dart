@@ -18,7 +18,7 @@ class JobCard extends StatelessWidget {
       child: Container(
         width: size.width,
         child: Card(
-          elevation: 5.0,
+          elevation: 2.0,
           shadowColor: Theme.of(context).shadowColor.withOpacity(0.3),
           child: InkWell(
             borderRadius: BorderRadius.circular(4.0),
@@ -101,12 +101,12 @@ class JobCard extends StatelessWidget {
                     children: [
                       Tag(
                         label: job.type,
-                        color: job.type.toLowerCase() == "remote" ? Colors.orangeAccent : Colors.redAccent,
+                        color: Colors.redAccent,
                       ),
                       SizedBox(width: 6),
                       Tag(
                         label: job.location.length >= 30 ? "${job.location.substring(0, 30)}..." : job.location,
-                        color: Colors.greenAccent,
+                        color:job.location.toLowerCase() == "remote" ? Colors.orangeAccent :  Colors.greenAccent,
                       ),
                     ],
                   ),

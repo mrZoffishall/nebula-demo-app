@@ -5,6 +5,7 @@ import 'package:nebula/providers/job_provider.dart';
 import 'package:nebula/providers/theme_provider.dart';
 import 'package:nebula/utils/n_exception.dart';
 import 'package:nebula/utils/status_bar.dart';
+import 'package:nebula/widgets/common/c_chip.dart';
 import 'package:nebula/widgets/common/error_state.dart';
 import 'package:nebula/widgets/common/loading_state.dart' as ls;
 import 'package:nebula/widgets/forms/c_text_field.dart';
@@ -39,8 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          //crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -98,26 +99,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   Wrap(
                     // Here we gonna show the 5 latest searched items
                     children: [
-                      GestureDetector(
+                      CChip(
+                        label: "Developer",
                         onTap: () {},
-                        child: Chip(
-                          label: Text("Developer"),
-                          elevation: 2.5,
-                          backgroundColor: Theme.of(context).accentColor,
-                          shadowColor: Theme.of(context).shadowColor,
-                          labelStyle: Theme.of(context).textTheme.bodyText2.apply(fontSizeDelta: -4),
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      GestureDetector(
-                        onTap: () {},
-                        child: Chip(
-                          label: Text("Designer"),
-                          elevation: 2.5,
-                          backgroundColor: Theme.of(context).accentColor,
-                          shadowColor: Theme.of(context).shadowColor,
-                          labelStyle: Theme.of(context).textTheme.bodyText2.apply(fontSizeDelta: -4),
-                        ),
                       ),
                     ],
                   ),
@@ -134,37 +118,33 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     (jobList) {
-                      return Expanded(
-                        child: Container(
-                          width: size.width,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(32.0),
-                              topRight: Radius.circular(32.0),
-                            ),
-                            color: Theme.of(context).backgroundColor,
+                      return Container(
+                        width: size.width,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(32.0),
+                            topRight: Radius.circular(32.0),
                           ),
-                          child: SingleChildScrollView(
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Latest jobs", style: Theme.of(context).textTheme.headline2),
-                                  SizedBox(height: 10),
-                                  ...jobList.map((job) {
-                                    return JobCard(
-                                      job: job,
-                                    );
-                                  })
-                                ],
-                              ),
-                            ),
+                          color: Theme.of(context).backgroundColor,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Latest jobs", style: Theme.of(context).textTheme.headline2),
+                              SizedBox(height: 10),
+                              ...jobList.map((job) {
+                                return JobCard(
+                                  job: job,
+                                );
+                              })
+                            ],
                           ),
                         ),
                       );
                     },
-                  )
+                  ),
           ],
         ),
       ),

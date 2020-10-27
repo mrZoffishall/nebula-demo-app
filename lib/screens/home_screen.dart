@@ -3,6 +3,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nebula/core/loading_state.dart';
 import 'package:nebula/models/job.dart';
 import 'package:nebula/providers/job_provider.dart';
+import 'package:nebula/providers/preferences_provider.dart';
 import 'package:nebula/providers/theme_provider.dart';
 import 'package:nebula/utils/n_exception.dart';
 import 'package:nebula/utils/status_bar.dart';
@@ -21,11 +22,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic> filters = {};
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<JobProvider>().getJobList();
+      context.read<PreferencesProvider>().getRecentSearches();
     });
     super.initState();
   }
@@ -35,9 +38,18 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  _updateSearchFilter(String value) {
+    if (filters.containsKey("description")) {
+      filters['description'] = value;
+    } else {
+      filters.addAll({"description": value});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
+    final searchList = context.watch<PreferencesProvider>().searches;
     statusBar.setColor(context: context);
     final Size size = MediaQuery.of(context).size;
 
@@ -86,19 +98,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Expanded(
                         child: CTextField(
+                          controller: _searchController,
                           prefixIcon: Icon(
                             Feather.search,
                             color: Colors.grey[500],
                           ),
                           hintText: "Search a job",
                           onFieldSubmitted: (String value) {
-                            if (filters.containsKey("description")) {
-                              filters['description'] = value;
-                            } else {
-                              filters.addAll({"description": value});
-                            }
+                            _updateSearchFilter(value);
 
                             context.read<JobProvider>().getJobList(filters: filters);
+                            context.read<PreferencesProvider>().saveSearch(value);
                           },
                         ),
                       ),
@@ -108,15 +118,23 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  Wrap(
-                    // Here we gonna show the 5 latest searched items
-                    children: [
-                      CChip(
-                        label: "Developer",
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
+                  if (searchList.isNotEmpty)
+                    Wrap(
+                      children: [
+                        ...searchList.map((e) {
+                          return CChip(
+                            label: e,
+                            onTap: () {
+                              setState(() {
+                                _searchController.text = e;
+                              });
+                              _updateSearchFilter(e);
+                              context.read<JobProvider>().getJobList(filters: filters);
+                            },
+                          );
+                        })
+                      ],
+                    ),
                 ],
               ),
             ),

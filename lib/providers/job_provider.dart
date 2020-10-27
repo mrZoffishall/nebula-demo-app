@@ -22,9 +22,10 @@ class JobProvider extends BaseProvider {
 
   getFilterStringFromMap(Map<String, dynamic> filters) {
     String filterString = "";
-    filters.forEach((key, value) {
-      filterString += "$key=$value&";
-    });
+    if (filters != null)
+      filters.forEach((key, value) {
+        filterString += "$key=$value&";
+      });
     return filterString;
   }
 }

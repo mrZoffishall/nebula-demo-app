@@ -4,11 +4,13 @@ class CTextField extends StatelessWidget {
   final String hintText;
   final Widget prefixIcon;
   final Function(String) onFieldSubmitted;
+  final TextEditingController controller;
 
   CTextField({
     this.hintText,
     this.prefixIcon,
     this.onFieldSubmitted,
+    this.controller,
   });
 
   @override
@@ -19,6 +21,7 @@ class CTextField extends StatelessWidget {
         color: Theme.of(context).backgroundColor,
       ),
       child: TextFormField(
+        controller: controller,
         onFieldSubmitted: onFieldSubmitted,
         decoration: InputDecoration(
           prefixIcon: prefixIcon,

@@ -74,8 +74,8 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                     fontSize: FontSize.small,
                   ),
                 },
-                onLinkTap: (String link) {
-                  print(link);
+                onLinkTap: (String link) async {
+                  if (await canLaunch(link)) launch(link);
                 },
               ),
               SizedBox(height: 60),

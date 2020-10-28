@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<JobProvider>().getJobList();
-      context.read<PreferencesProvider>().getRecentSearches();
+      context.read<PreferencesProvider>().getRecentSearches();      
     });
     super.initState();
   }
@@ -50,8 +50,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
     final searchList = context.watch<PreferencesProvider>().searches;
-    statusBar.setColor(context: context);
     final Size size = MediaQuery.of(context).size;
+
+    statusBar.setColor(context: context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -143,15 +144,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? ls.LoadingState()
                 : context.select((JobProvider provider) => provider).jobList.fold(
                     (NException error) {
-                      return ErrorState(
-                        message: error.message,
+                      return Column(
+                        children: [
+                          AspectRatio(aspectRatio: 5/1),
+                          ErrorState(
+                            message: error.message,
+                          )
+                        ],
                       );
                     },
                     (jobList) {
                       return jobList.isEmpty
-                          ? EmptyState(
-                            message: "No job available for the moment, please try again later.",
-                          )
+                          ? [
+                            AspectRatio(aspectRatio: 5/1),
+                            EmptyState(
+                              message: "No job available for the moment, please try again later.",
+                            )
+                          ]
                           : Container(
                               width: size.width,
                               decoration: BoxDecoration(

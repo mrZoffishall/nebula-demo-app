@@ -15,6 +15,9 @@ class NException implements Exception {
         case 502:
           this.message = "Sorry, the server is temporary unavailable.";
           break;
+        case 500:
+          this.message = "The server is currently down, please try again later.";
+          break;
         default:
           this.message = "An unknown error occured.";
       }

@@ -4,9 +4,10 @@ import 'package:nebula/models/job.dart';
 import 'package:nebula/utils/n_exception.dart';
 
 class JobService {
-  Future<List<Job>> getJobs({String filters}) async {
+  Future<List<Job>> getJobs({String filters = ""}) async {
     try {
-      Response response = await worker.get("/positions.json?$filters");
+      final String uri = filters.isEmpty ? "/positions.json" : "/positions.json?$filters";
+      Response response = await worker.get(uri);
       return List<Job>.from(((response.data) as List).map((json) {
         return Job.fromJson(json);
       }));

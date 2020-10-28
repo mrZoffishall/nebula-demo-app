@@ -11,15 +11,12 @@ class PreferencesProvider extends BaseProvider {
       notifyListeners();
     }).catchError((e) {
       print(e);
-      print("Couldn't load filters");
     });
   }
 
   saveSearch(String search) {
     preferencesService.saveSearch(search).then((value) {
       this.getRecentSearches();
-    }).catchError((e) {
-      print("Couldn't add this item to recent search list");
-    });
+    }).catchError((e) {});
   }
 }

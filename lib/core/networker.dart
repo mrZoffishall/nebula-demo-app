@@ -4,6 +4,12 @@ import 'package:nebula/utils/constants.dart';
 
 class Networker {
   Dio _dio;
+  /// The navigatorKey will further be used to perform redirections
+  /// Example:
+  ///   `navigatorKey.currentState.push(...)`
+  /// Useful if you need for example to redirect a user back to 
+  /// the login page after a 401 redirection from the API
+  /// 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   Networker() {

@@ -3,8 +3,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PreferencesService {
   Future<List<String>> loadSearches() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
-    final stringList = preferences.containsKey("searches") ? preferences.getStringList("searches") : [];
-    return stringList;
+    final List<String> stringList = preferences.containsKey("searches") ? preferences.getStringList("searches") : <String>[];
+    return await Future((){
+      return stringList;
+    });
   }
 
   Future<void> saveSearch(String search) async {

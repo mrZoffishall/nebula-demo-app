@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<JobProvider>().getJobList();
-      context.read<PreferencesProvider>().getRecentSearches();      
+      context.read<PreferencesProvider>().getRecentSearches();
     });
     super.initState();
   }
@@ -146,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     (NException error) {
                       return Column(
                         children: [
-                          AspectRatio(aspectRatio: 5/1),
+                          AspectRatio(aspectRatio: 5 / 1),
                           ErrorState(
                             message: error.message,
                           )
@@ -155,12 +155,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     (jobList) {
                       return jobList.isEmpty
-                          ? [
-                            AspectRatio(aspectRatio: 5/1),
-                            EmptyState(
-                              message: "No job available for the moment, please try again later.",
+                          ? Column(
+                              children: [
+                                AspectRatio(aspectRatio: 5 / 1),
+                                EmptyState(
+                                  message: "No job available for the moment, please try again later.",
+                                )
+                              ],
                             )
-                          ]
                           : Container(
                               width: size.width,
                               decoration: BoxDecoration(

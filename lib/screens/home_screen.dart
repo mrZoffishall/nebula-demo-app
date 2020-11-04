@@ -8,6 +8,7 @@ import 'package:nebula/providers/theme_provider.dart';
 import 'package:nebula/utils/n_exception.dart';
 import 'package:nebula/utils/status_bar.dart';
 import 'package:nebula/widgets/common/c_chip.dart';
+import 'package:nebula/widgets/dialogs/filter_dialog.dart';
 import 'package:nebula/widgets/states/empty_state.dart';
 import 'package:nebula/widgets/states/error_state.dart';
 import 'package:nebula/widgets/states/loading_state.dart' as ls;
@@ -21,7 +22,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Map<String, dynamic> filters = {};
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<JobProvider>().getJobList();
       context.read<PreferencesProvider>().getRecentSearches();
+      context.read<PreferencesProvider>().getRecentFilters();
     });
     super.initState();
   }
@@ -38,19 +39,13 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  _updateSearchFilter(String value) {
-    if (filters.containsKey("description")) {
-      filters['description'] = value;
-    } else {
-      filters.addAll({"description": value});
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
     final searchList = context.watch<PreferencesProvider>().searches;
     final Size size = MediaQuery.of(context).size;
+    final oldFilters = context.watch<PreferencesProvider>().filters;
 
     statusBar.setColor(context: context);
 
@@ -106,16 +101,32 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           hintText: "Search a job",
                           onFieldSubmitted: (String value) {
-                            _updateSearchFilter(value);
 
-                            context.read<JobProvider>().getJobList(filters: filters);
+                            if (oldFilters.containsKey("description")) {
+                              oldFilters.update("description", (value) => value);
+                              context.read<PreferencesProvider>().saveFilters(oldFilters);
+                            } else {
+                              oldFilters["description"] = value;
+                              context.read<PreferencesProvider>().saveFilters(oldFilters);
+                            }
+
+                            context.read<JobProvider>().getJobList(filters: oldFilters);
                             context.read<PreferencesProvider>().saveSearch(value);
                           },
                         ),
                       ),
                       IconButton(
                         icon: Icon(Feather.sliders),
-                        onPressed: () {},
+                        onPressed: () {
+
+                          showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (context) => Center(
+                              child: Center(child: Container(child: FilterDialog(), width: 300, height: 400,)),),
+                          );
+
+                        },
                       ),
                     ],
                   ),
@@ -129,8 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               setState(() {
                                 _searchController.text = e;
                               });
-                              _updateSearchFilter(e);
-                              context.read<JobProvider>().getJobList(filters: filters);
+                              context.read<JobProvider>().getJobList(filters: oldFilters);
                             },
                           );
                         })

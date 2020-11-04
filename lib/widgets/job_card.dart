@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
-import 'package:nebula/models/job.dart';
+import 'package:nebula/core/models/job.dart';
 import 'package:nebula/screens/jobs/job_details_screen.dart';
 import 'package:nebula/widgets/common/tag.dart';
 

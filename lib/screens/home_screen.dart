@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nebula/core/loading_state.dart';
-import 'package:nebula/models/job.dart';
+import 'package:nebula/core/models/job.dart';
+import 'package:nebula/core/utils/n_exception.dart';
+import 'package:nebula/core/utils/status_bar.dart';
 import 'package:nebula/providers/job_provider.dart';
 import 'package:nebula/providers/preferences_provider.dart';
 import 'package:nebula/providers/theme_provider.dart';
-import 'package:nebula/utils/n_exception.dart';
-import 'package:nebula/utils/status_bar.dart';
 import 'package:nebula/widgets/common/c_chip.dart';
 import 'package:nebula/widgets/dialogs/filter_dialog.dart';
 import 'package:nebula/widgets/states/empty_state.dart';

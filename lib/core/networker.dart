@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:nebula/utils/constants.dart';
+import 'package:nebula/core/utils/constants.dart';
 
 class Networker {
   Dio _dio;

@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
-import 'package:nebula/models/job.dart';
+import 'package:nebula/core/models/job.dart';
+import 'package:nebula/core/utils/n_exception.dart';
 import 'package:nebula/providers/base_provider.dart';
 import 'package:nebula/services/job_service.dart';
-import 'package:nebula/utils/n_exception.dart';
 
 class JobProvider extends BaseProvider {
   Either<NException, List<Job>> jobList = Right([]);

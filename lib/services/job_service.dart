@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:nebula/core/models/job.dart';
 import 'package:nebula/core/networker.dart';
-import 'package:nebula/models/job.dart';
-import 'package:nebula/utils/n_exception.dart';
+import 'package:nebula/core/utils/n_exception.dart';
 
 class JobService {
   Future<List<Job>> getJobs({String filters = ""}) async {

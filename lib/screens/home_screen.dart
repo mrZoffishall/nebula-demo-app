@@ -100,18 +100,25 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.grey[500],
                           ),
                           hintText: "Search a job",
-                          onFieldSubmitted: (String value) {
+                          onFieldSubmitted: (String newValue) {
 
-                            if (oldFilters.containsKey("description")) {
-                              oldFilters.update("description", (value) => value);
-                              context.read<PreferencesProvider>().saveFilters(oldFilters);
-                            } else {
-                              oldFilters["description"] = value;
-                              context.read<PreferencesProvider>().saveFilters(oldFilters);
+
+                            oldFilters["description"] = newValue;
+                            context.read<PreferencesProvider>().saveFilters(oldFilters);
+
+                            if(oldFilters.containsKey("location")){
+                              if(oldFilters["location"] == "All lands")
+                                oldFilters.remove("location");
                             }
 
+                            if(!searchList.contains(newValue)){
+                              searchList.add(newValue);
+                              context.read<PreferencesProvider>().saveSearch(newValue);
+                            }
+
+                            print(oldFilters);
+
                             context.read<JobProvider>().getJobList(filters: oldFilters);
-                            context.read<PreferencesProvider>().saveSearch(value);
                           },
                         ),
                       ),

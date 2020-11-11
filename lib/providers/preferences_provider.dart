@@ -2,7 +2,6 @@ import 'package:nebula/providers/base_provider.dart';
 import 'package:nebula/services/preferences_service.dart';
 
 class PreferencesProvider extends BaseProvider {
-
   List<String> searches = [];
   Map<String, dynamic> filters = {};
 
@@ -32,7 +31,7 @@ class PreferencesProvider extends BaseProvider {
     });
   }
 
-  saveFilters(Map<String, dynamic>  newFilters) {
+  updateFilters(Map<String, dynamic> newFilters) {
     preferencesService.saveFilters(newFilters).then((value) {
       this.getRecentFilters();
     }).catchError((e) {});

@@ -23,8 +23,6 @@ class _FilterDialogState extends State<FilterDialog> {
     super.dispose();
   }
 
-  bool _isRemote = true;
-  bool _isFullTime = true;
   String _dropdownValue = lands[0];
 
   @override
@@ -47,38 +45,36 @@ class _FilterDialogState extends State<FilterDialog> {
               children: [
                 Text("Remote Jobs :"),
                 Switch(
-                  value: _isRemote,
+                  value: oldFilters['remote'] ?? true,
                   activeColor: Theme.of(context).primaryColor,
                   onChanged: (newValue) {
-                    setState(() {
-                      _isRemote = newValue;
-                    });
+                    if (!oldFilters.containsKey("remote")) {
+                      oldFilters["remote"] = newValue;
+                    } else {
+                      oldFilters.update("remote", (value) => newValue);
+                    }
+                    context.read<PreferencesProvider>().updateFilters(oldFilters);
+                    setState(() {});
                   },
                 )
               ],
             ),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Full Time :"),
                 Switch(
-                  value: oldFilters["full_time"] == null ? _isFullTime : oldFilters["full_time"] as bool,
+                  value: oldFilters["full_time"] ?? true,
                   activeColor: Theme.of(context).primaryColor,
                   onChanged: (newValue) {
-                    setState(() {
-                      _isFullTime = newValue;
-
-                      if (oldFilters.containsKey("full_time")) {
-                        oldFilters.update("full_time", (value) => _isFullTime);
-                        context.read<PreferencesProvider>().saveFilters(oldFilters);
-                      } else {
-                        oldFilters["full_time"] = _isFullTime;
-                        context.read<PreferencesProvider>().saveFilters(oldFilters);
-                      }
-                    });
+                    if (!oldFilters.containsKey("full_time")) {
+                      oldFilters["full_time"] = newValue;
+                    } else {
+                      oldFilters.update("full_time", (value) => newValue);
+                    }
+                    context.read<PreferencesProvider>().updateFilters(oldFilters);
+                    setState(() {});
                   },
                 )
               ],
@@ -92,7 +88,7 @@ class _FilterDialogState extends State<FilterDialog> {
                   width: 10,
                 ),
                 DropdownButton<String>(
-                  value: oldFilters["location"] == null ? _dropdownValue : oldFilters["location"].toString(),
+                  value: _dropdownValue,
                   icon: Icon(
                     Icons.keyboard_arrow_down,
                     color: Theme.of(context).primaryColor,
@@ -103,19 +99,27 @@ class _FilterDialogState extends State<FilterDialog> {
                     setState(() {
                       _dropdownValue = newValue;
 
-                      if (oldFilters.containsKey("location")) {
-                        oldFilters.update("location", (value) => _dropdownValue);
-                        context.read<PreferencesProvider>().saveFilters(oldFilters);
+                      if (newValue == "All lands") {
+                        oldFilters.remove("location");
                       } else {
-                        oldFilters["location"] = _dropdownValue;
-                        context.read<PreferencesProvider>().saveFilters(oldFilters);
+                        if (oldFilters.containsKey("location")) {
+                          oldFilters.update("location", (value) => _dropdownValue);
+                        } else {
+                          oldFilters["location"] = _dropdownValue;
+                        }
                       }
+                      context.read<PreferencesProvider>().updateFilters(oldFilters);
                     });
                   },
                   items: lands.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value),
+                      child: Text(
+                        value,
+                        style: TextStyle(
+                          fontSize: 12.0,
+                        ),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -127,7 +131,7 @@ class _FilterDialogState extends State<FilterDialog> {
               width: MediaQuery.of(context).size.width,
               child: RaisedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop(true);
                 },
                 color: Theme.of(context).primaryColor,
                 child: Text(

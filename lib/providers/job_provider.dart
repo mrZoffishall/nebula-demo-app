@@ -26,6 +26,7 @@ class JobProvider extends BaseProvider {
       filters.forEach((key, value) {
         filterString += "$key=$value&";
       });
+    print(filterString);
     return filterString;
   }
 }

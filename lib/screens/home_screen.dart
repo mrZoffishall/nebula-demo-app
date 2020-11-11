@@ -47,6 +47,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final searchList = context.watch<PreferencesProvider>().searches;
     final oldFilters = context.watch<PreferencesProvider>().filters;
 
+    void updateJobs() {
+      context.read<JobProvider>().getJobList(filters: oldFilters);
+    }
+
     statusBar.setColor(context: context);
 
     return Scaffold(
@@ -102,18 +106,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           hintText: "Search a job",
                           onFieldSubmitted: (String newValue) {
                             oldFilters["description"] = newValue;
-                            context.read<PreferencesProvider>().saveFilters(oldFilters);
-
-                            if (oldFilters.containsKey("location")) {
-                              if (oldFilters["location"] == "All lands") oldFilters.remove("location");
-                            }
+                            context.read<PreferencesProvider>().updateFilters(oldFilters);
 
                             if (!searchList.contains(newValue)) {
                               searchList.add(newValue);
                               context.read<PreferencesProvider>().saveSearch(newValue);
                             }
 
-                            context.read<JobProvider>().getJobList(filters: oldFilters);
+                            updateJobs();
                           },
                         ),
                       ),
@@ -132,7 +132,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                             ),
-                          );
+                          ).then((value) {
+                            if (value != null) {
+                              updateJobs();
+                            }
+                          });
                         },
                       ),
                     ],
@@ -147,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               setState(() {
                                 _searchController.text = e;
                               });
-                              context.read<JobProvider>().getJobList(filters: oldFilters);
+                              updateJobs();
                             },
                           );
                         })

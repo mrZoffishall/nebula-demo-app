@@ -39,12 +39,12 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     final themeProvider = context.watch<ThemeProvider>();
     final searchList = context.watch<PreferencesProvider>().searches;
-    final Size size = MediaQuery.of(context).size;
     final oldFilters = context.watch<PreferencesProvider>().filters;
 
     statusBar.setColor(context: context);
@@ -101,22 +101,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           hintText: "Search a job",
                           onFieldSubmitted: (String newValue) {
-
-
                             oldFilters["description"] = newValue;
                             context.read<PreferencesProvider>().saveFilters(oldFilters);
 
-                            if(oldFilters.containsKey("location")){
-                              if(oldFilters["location"] == "All lands")
-                                oldFilters.remove("location");
+                            if (oldFilters.containsKey("location")) {
+                              if (oldFilters["location"] == "All lands") oldFilters.remove("location");
                             }
 
-                            if(!searchList.contains(newValue)){
+                            if (!searchList.contains(newValue)) {
                               searchList.add(newValue);
                               context.read<PreferencesProvider>().saveSearch(newValue);
                             }
-
-                            print(oldFilters);
 
                             context.read<JobProvider>().getJobList(filters: oldFilters);
                           },
@@ -125,14 +120,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       IconButton(
                         icon: Icon(Feather.sliders),
                         onPressed: () {
-
                           showDialog(
                             context: context,
                             barrierDismissible: true,
                             builder: (context) => Center(
-                              child: Center(child: Container(child: FilterDialog(), width: 300, height: 400,)),),
+                              child: Center(
+                                child: Container(
+                                  child: FilterDialog(),
+                                  width: 300,
+                                  height: 400,
+                                ),
+                              ),
+                            ),
                           );
-
                         },
                       ),
                     ],
